@@ -1,0 +1,100 @@
+{% extends "base_generic.html" %}
+{% load static %}
+
+
+
+
+{% block content %}
+
+<style>
+
+
+  .div{
+    font-size: 14px;
+    max-width: 700px;
+  }
+  div img{
+    margin-top: 5px;
+    width: 100%;
+    height: auto;
+
+    
+    
+  }
+  .item{
+    border-bottom: 3px solid rgb(255, 3, 242);
+    max-width: 700px;
+    display: flex; flex-direction: column; margin-top: 30px;
+  }
+  .news{
+  
+  }
+
+</style>
+
+
+<div class="news"  >
+{%for i in news %}
+
+
+   <div class="item"   >
+    <div style="margin-bottom: 10px;"> <h2>{{i.title_post}}</h2></a></div>
+    <div class="des"  id="des" >{{i.description_post}}</div>
+    <div style='margin-top: 10px;'><a href={{i.link_post}}> {{i.link_post}} </a></div>
+  
+    <div style="text-align: right; margin-top: 10px;">{{i.data_time}}</div>
+  
+      
+</div> 
+
+
+
+{%endfor%}
+</div>
+
+</div>
+
+
+
+<script>
+
+
+
+	$.fn.toHtml=function(){
+       return $(this).html($(this).text())
+    }
+
+   
+
+
+
+$(document).ready(function() {
+$('#des').toHtml()
+
+ 
+
+ 
+
+});
+
+
+
+
+
+
+
+
+
+   
+</script>
+
+
+
+
+
+
+
+{% endblock %}
+
+
+

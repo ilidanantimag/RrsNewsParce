@@ -1,0 +1,76 @@
+{% extends "base_generic.html" %}
+{% load static %}
+
+
+
+
+{% block content %}
+
+<style>
+
+
+  .div{
+    font-size: 14px;
+    max-width: 700px;
+  }
+  div img{
+    margin-top: 5px;
+    width: 100%;
+    height: auto;
+
+    
+    
+  }
+  .item{
+    border-bottom: 3px solid rgb(255, 3, 242);
+    max-width: 700px;
+    display: flex; flex-direction: column; margin-top: 30px;
+  }
+  .news{
+  
+  }
+
+</style>
+
+
+<div class="news"  >
+{%for i in posts %}
+
+
+   <div class="item"  >
+    <div style="margin-bottom: 10px;"> <a href={{i.link}}> <h2>{{i.title}}</h2></a></div>
+    <div class="des"  >  {% for href in i.enclosures %}
+      <a href={{i.link}}>  <img src={{href.href}}></a>
+      {%endfor%}   
+      
+       </div>
+  
+    <div style="text-align: right; margin-top: 10px;">{{i.published}}</div>
+  
+      
+</div> 
+
+
+
+{%endfor%}
+</div>
+
+</div>
+
+
+
+  {% if posts.has_next %}
+                <a  href="?page={{ posts.next_page_number }}"> next</a>
+                {% endif %}
+             
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
