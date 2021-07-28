@@ -23,7 +23,7 @@ b = 0;
 i = 1
 while i != 0:
     def parc (b):    
-        a = 1395
+        a = 0
         print(b)
         if b >= a:
             a =b 
