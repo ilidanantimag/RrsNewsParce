@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-import os,sys
+import os
 from celery import Celery
 from datetime import timedelta
 
