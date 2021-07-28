@@ -1,11 +1,11 @@
 from __future__ import absolute_import
-import os
+import os,sys
 from celery import Celery
 from datetime import timedelta
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'news.settings')
-app = Celery("rss")
+app = Celery("news")
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
@@ -40,7 +40,94 @@ def feed_name():
     from dateutil.parser import parse
     from django.db.models import Count
     import os
+
+
+    #Вынес из обновления в одельные функции для наглядности 
+
+
+
+
+
+
+
+
+
+    #Достаю картинки из описания
+    def add_image():
+        print('Достаю картинки из описания')
+        img = RrsFeedItems.objects.all()
+        a=0
+        for i in img:
+            if i.image_post == '':
+                soup = BeautifulSoup(i.description_post, 'lxml')
+                if soup.find('img') is None:
+                    print("None")
+                else:    
+                    lin = soup.find_all('img')[0]
+                    l=lin.get('src')
+                    l = l.replace('[','')
+                    l= l.replace(']','')
+                    l = l.replace("'",'')
+                    l = l.replace(",",'')
+                    i.image_post = l
+                    i.save()
+                    a=a+1
+                    print(a)
+                    print('Достаю картинки из описания')
     
+    #Добавляю категории к новостям
+    def cat_post():
+        print("Добавляю категории к новостям")
+        items = RrsFeedItems.objects.all()
+        cat=Categories.objects.get(title='Хоккей')
+        a=0
+        sour = Sources.objects.all()
+        for s in sour:
+            cat = Categories.objects.filter(categories=s)
+            for c in cat:
+                item = RrsFeedItems.objects.filter(soures=s.id)
+                for i in item:
+                    for p in CategoriesPost.objects.filter(title=c.title):
+                        i.categories.add(p)
+                        a=a+1
+                        print(a)
+                        print("Добавляю категории к новостям")
+        add_image()
+
+
+        #строку в DataTime
+    def date_time():
+        print("строку в DataTime")
+        items = RrsFeedItems.objects.all()
+        a=0
+        for i in items:
+            print(i.title_post)
+            print(i.pub_date)
+            if i.pub_date is None:
+                print('Нет дат')
+            else:
+                try:
+                    data = parse(i.pub_date)
+                    i.data_time=data
+                    i.save()
+                    a=a+1
+                    print(a) 
+                    print(i.data_time)
+                    print("Преобразовываю спаршеную строку в DataTime")
+                except:
+                    print('error')        
+        cat_post()
+
+
+
+
+
+
+
+
+
+
+
 #Update_)))
     def update():
         print("обновление")
@@ -175,76 +262,6 @@ def feed_name():
                 print("404")
         date_time()            
 
-
-
-    #Вынес из обновления в одельные функции для наглядности 
-
-
-
-    #Преобразовываю спаршеную строку в DataTime
-
-    def date_time():
-        print("Преобразовываю спаршеную строку в DataTime")
-        items = RrsFeedItems.objects.all()
-        a=0
-        for i in items:
-            print(i.title_post)
-            print(i.pub_date)
-            if i.pub_date is None:
-                print('Нет дат')
-            else:
-                try:
-                    data = parse(i.pub_date)
-                    i.data_time=data
-                    i.save()
-                    a=a+1
-                    print(a) 
-                    print(i.data_time)
-                    print("Преобразовываю спаршеную строку в DataTime")
-                except:
-                    print('error')        
-        cat_post()
-#Добавляю категории к новостям
-
-    def cat_post():
-        print("Добавляю категории к новостям")
-        items = RrsFeedItems.objects.all()
-        cat=Categories.objects.get(title='Хоккей')
-        a=0
-        sour = Sources.objects.all()
-        for s in sour:
-            cat = Categories.objects.filter(categories=s)
-            for c in cat:
-                item = RrsFeedItems.objects.filter(soures=s.id)
-                for i in item:
-                    for p in CategoriesPost.objects.filter(title=c.title):
-                        i.categories.add(p)
-                        a=a+1
-                        print(a)
-                        print("Добавляю категории к новостям")
-        add_image()
-#Достаю картинки из описания
-    def add_image():
-        print('Достаю картинки из описания')
-        img = RrsFeedItems.objects.all()
-        a=0
-        for i in img:
-            if i.image_post == '':
-                soup = BeautifulSoup(i.description_post, 'lxml')
-                if soup.find('img') is None:
-                    print("None")
-                else:    
-                    lin = soup.find_all('img')[0]
-                    l=lin.get('src')
-                    l = l.replace('[','')
-                    l= l.replace(']','')
-                    l = l.replace("'",'')
-                    l = l.replace(",",'')
-                    i.image_post = l
-                    i.save()
-                    a=a+1
-                    print(a)
-                    print('Достаю картинки из описания')
 
     update(),
     
