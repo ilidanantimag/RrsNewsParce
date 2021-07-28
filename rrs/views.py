@@ -361,7 +361,7 @@ def add_image():
 
 
 
-#Преобразовываю спаршеную строку в DataTime
+# строку в DataTime
 
 def date_time(requests):
     items = RrsFeedItems.objects.all()
@@ -396,7 +396,7 @@ def date_time(requests):
 #Создание базы данных
 
 
-#Добавляю категории к источникам
+#Добавляю категории
 
 def add_cat():
     rr = Categories.objects.all()
