@@ -85,26 +85,7 @@ def chanal(request, slug=None, id=None ):
 
 
 
-#Достаю картинки из описания
-def add_image():
-    img = RrsFeedItems.objects.all()
-    a=0
-    for i in img:
-        if i.image_post == '':
-            soup = BeautifulSoup(i.description_post, 'lxml')
-            if soup.find('img') is None:
-                print("None")
-            else:    
-                lin = soup.find_all('img')[0]
-                l=lin.get('src')
-                l = l.replace('[','')
-                l= l.replace(']','')
-                l = l.replace("'",'')
-                l = l.replace(",",'')
-                i.image_post = l
-                i.save()
-                a=a+1
-                print(a)
+
                 
                     
 
@@ -198,52 +179,7 @@ def rrs_generator():
 
 
 
-#Добавляю категории к новостям
 
-def cat_post(request):
-    items = RrsFeedItems.objects.all()
-    cat=Categories.objects.get(title='Хоккей')
-    a=0
-    sour = Sources.objects.all()
-    for s in sour:
-        cat = Categories.objects.filter(categories=s)
-        for c in cat:
-            item = RrsFeedItems.objects.filter(soures=s.id)
-            for i in item:
-                for p in CategoriesPost.objects.filter(title=c.title):
-                    i.categories.add(p)
-                    a=a+1
-                    print(a)
-                
-
-
-
-
-
-
-#Преобразовываю спаршеную строку в DataTime
-
-def date_time(requests):
-    items = RrsFeedItems.objects.all()
-    a=0
-    for i in items:
-        print(i.title_post)
-        print(i.pub_date)
-        if i.pub_date is None:
-            print('Нет дат')
-        else:
-            try:
-                data = parse(i.pub_date)
-                i.data_time=data
-                i.save()
-                a=a+1
-                print(a) 
-                print(i.data_time)
-            except:
-                print('error')        
-    return render(request,
-    'index.html'
-    )   
 
 
 
@@ -383,7 +319,71 @@ def update():
     'index.html'
     )               
 
+#Добавляю категории к новостям
 
+def cat_post(request):
+    items = RrsFeedItems.objects.all()
+    cat=Categories.objects.get(title='Хоккей')
+    a=0
+    sour = Sources.objects.all()
+    for s in sour:
+        cat = Categories.objects.filter(categories=s)
+        for c in cat:
+            item = RrsFeedItems.objects.filter(soures=s.id)
+            for i in item:
+                for p in CategoriesPost.objects.filter(title=c.title):
+                    i.categories.add(p)
+                    a=a+1
+                    print(a)
+                
+#Достаю картинки из описания
+def add_image():
+    img = RrsFeedItems.objects.all()
+    a=0
+    for i in img:
+        if i.image_post == '':
+            soup = BeautifulSoup(i.description_post, 'lxml')
+            if soup.find('img') is None:
+                print("None")
+            else:    
+                lin = soup.find_all('img')[0]
+                l=lin.get('src')
+                l = l.replace('[','')
+                l= l.replace(']','')
+                l = l.replace("'",'')
+                l = l.replace(",",'')
+                i.image_post = l
+                i.save()
+                a=a+1
+                print(a)
+
+
+
+
+
+#Преобразовываю спаршеную строку в DataTime
+
+def date_time(requests):
+    items = RrsFeedItems.objects.all()
+    a=0
+    for i in items:
+        print(i.title_post)
+        print(i.pub_date)
+        if i.pub_date is None:
+            print('Нет дат')
+        else:
+            try:
+                data = parse(i.pub_date)
+                i.data_time=data
+                i.save()
+                a=a+1
+                print(a) 
+                print(i.data_time)
+            except:
+                print('error')        
+    return render(request,
+    'index.html'
+    )   
 
 
 
